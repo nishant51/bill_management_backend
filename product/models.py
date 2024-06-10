@@ -25,19 +25,6 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-    
-class Product(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255)
-    image = models.BinaryField(blank=True, null=True)
-    price = models.IntegerField()
-    quantity = models.IntegerField()
-    added_date = models.DateField()
-    updated_date = models.DateField(blank=True, null=True)
-    empty_date = models.DateField(blank=True, null=True)
-
-    def __str__(self):
-        return self.name
 
 class SoldProduct(models.Model):
     id = models.AutoField(primary_key=True)
