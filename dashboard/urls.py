@@ -1,5 +1,7 @@
-from django.urls import path,include
-from .viewsets import *
+# accounts/urls.py
+from django.urls import path
+from .viewsets import UserLoginApi
+
 urlpatterns = [
-    path('home/',home)
+    path('login/', UserLoginApi.as_view(), name='login'),
 ]
