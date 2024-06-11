@@ -2,7 +2,9 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .models import Category, Product, SoldProduct, DailySalesReport, SubCategory
 from .serializers import CategorySerializer, ProductSerializer, SoldProductSerializer, DailySalesReportSerializer, SubCategorySerializer
-
+from rest_framework.permissions import IsAuthenticated
+from .paginations import TenPagination
+from django.db.models import Q
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -56,6 +58,29 @@ class SubCategoryViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    pagination_class = TenPagination
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.query_params.get('search_name', None)
+        if query:
+            # Filter queryset based on the 'q' parameter
+            queryset = queryset.filter(
+                Q(name__icontains=query)  #| 
+                # Q(description__icontains=query)  # Example: Filter by description
+            )
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -79,6 +104,28 @@ class ProductViewSet(viewsets.ModelViewSet):
 class SoldProductViewSet(viewsets.ModelViewSet):
     queryset = SoldProduct.objects.all()
     serializer_class = SoldProductSerializer
+    pagination_class = TenPagination
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.query_params.get('search_name', None)
+        if query:
+            queryset = queryset.filter(
+                Q(product__name__icontains=query)  #| 
+                # Q(description__icontains=query)  
+            )
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -102,6 +149,29 @@ class SoldProductViewSet(viewsets.ModelViewSet):
 class DailySalesReportViewSet(viewsets.ModelViewSet):
     queryset = DailySalesReport.objects.all()
     serializer_class = DailySalesReportSerializer
+    pagination_class = TenPagination
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.query_params.get('search_name', None)
+        if query:
+            # Filter queryset based on the 'q' parameter
+            queryset = queryset.filter(
+                Q(sold_product__product__name__icontains=query)  #| 
+                # Q(description__icontains=query)  # Example: Filter by description
+            )
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
