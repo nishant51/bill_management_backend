@@ -9,6 +9,9 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.authtoken.models import Token
 from django.db.models import Q
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.authentication import TokenAuthentication
+from django.utils import timezone
 
 class UserLoginApi(APIView):
     def post(self, request, *args, **kwargs):
@@ -28,3 +31,17 @@ class UserLoginApi(APIView):
             return Response(response_data)
         else:
             return Response({"error": "Invalid credentials"}, status=401)
+        
+class CheckToken(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        token = request.auth
+        user = request.user
+        if token and token.created:
+            if token.created < (timezone.now() - timezone.timedelta(days=1)):
+                return Response({"message": "Token has expired"}, status=401)
+        return Response(
+            {"message": "Token is valid"}, status=200
+        )

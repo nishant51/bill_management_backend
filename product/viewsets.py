@@ -156,10 +156,8 @@ class DailySalesReportViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset()
         query = self.request.query_params.get('search_name', None)
         if query:
-            # Filter queryset based on the 'q' parameter
             queryset = queryset.filter(
                 Q(sold_product__product__name__icontains=query)  #| 
-                # Q(description__icontains=query)  # Example: Filter by description
             )
         return queryset
 
