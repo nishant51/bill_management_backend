@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, InvoiceItem, DailySalesReport
+from .models import Product, InvoiceItem, InvoiceBill
 from .models import Category, SubCategory
 
 class SubCategoryInline(admin.TabularInline):
@@ -38,7 +38,7 @@ class InvoiceItemAdmin(admin.ModelAdmin):
     list_display = ('id', 'product', 'quantity', 'total_price', 'created_at', 'discount')
     search_fields = ('product__name',)
 
-@admin.register(DailySalesReport)
-class DailySalesReportAdmin(admin.ModelAdmin):
+@admin.register(InvoiceBill)
+class InvoiceBillAdmin(admin.ModelAdmin):
     list_display = ('id', 'sold_product')
     search_fields = ('sold_product__product__name',)

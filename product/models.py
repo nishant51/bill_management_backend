@@ -37,9 +37,9 @@ class InvoiceItem(models.Model):
     def __str__(self):
         return f"Sold {self.quantity} of {self.product.name}"
 
-class DailySalesReport(models.Model):
+class InvoiceBill(models.Model):
     id = models.AutoField(primary_key=True)
     sold_product = models.ForeignKey(InvoiceItem, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Daily Report ID: {self.id}"
+        return f"invoice bill ID: {self.id}"
