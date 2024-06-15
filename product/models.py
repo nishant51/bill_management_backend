@@ -26,7 +26,7 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-class SoldProduct(models.Model):
+class InvoiceItem(models.Model):
     id = models.AutoField(primary_key=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
@@ -39,7 +39,7 @@ class SoldProduct(models.Model):
 
 class DailySalesReport(models.Model):
     id = models.AutoField(primary_key=True)
-    sold_product = models.ForeignKey(SoldProduct, on_delete=models.CASCADE)
+    sold_product = models.ForeignKey(InvoiceItem, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Daily Report ID: {self.id}"

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Product, SoldProduct, DailySalesReport, SubCategory
+from .models import Category, Product, InvoiceItem, DailySalesReport, SubCategory
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -33,11 +33,11 @@ class ProductSerializer(serializers.ModelSerializer):
         return None
 
 
-class SoldProductSerializer(serializers.ModelSerializer):
+class InvoiceItemSerializer(serializers.ModelSerializer):
     product_info = serializers.SerializerMethodField()
 
     class Meta:
-        model = SoldProduct
+        model = InvoiceItem
         fields = '__all__'
 
     def get_product_info(self, obj):

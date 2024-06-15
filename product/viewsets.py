@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from .models import Category, Product, SoldProduct, DailySalesReport, SubCategory
-from .serializers import CategorySerializer, ProductSerializer, SoldProductSerializer, DailySalesReportSerializer, SubCategorySerializer
+from .models import Category, Product, InvoiceItem, DailySalesReport, SubCategory
+from .serializers import CategorySerializer, ProductSerializer, InvoiceItemSerializer, DailySalesReportSerializer, SubCategorySerializer
 from rest_framework.permissions import IsAuthenticated
 from .paginations import TenPagination
 from django.db.models import Q
@@ -101,9 +101,9 @@ class ProductViewSet(viewsets.ModelViewSet):
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class SoldProductViewSet(viewsets.ModelViewSet):
-    queryset = SoldProduct.objects.all()
-    serializer_class = SoldProductSerializer
+class InvoiceItemViewSet(viewsets.ModelViewSet):
+    queryset = InvoiceItem.objects.all()
+    serializer_class = InvoiceItemSerializer
     pagination_class = TenPagination
     permission_classes = [IsAuthenticated]
 
