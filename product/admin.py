@@ -20,7 +20,7 @@ class SubCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'price', 'quantity', 'added_date', 'updated_date', 'empty_date', 'category', 'sub_category')
+    list_display = ('id', 'name', 'price', 'in_stock', 'added_date', 'updated_date', 'empty_date', 'category', 'sub_category')
     search_fields = ('name', 'category__name', 'sub_category__name')
     list_filter = ('category', 'sub_category')
     readonly_fields = ('added_date', 'updated_date')

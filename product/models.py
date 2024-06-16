@@ -16,7 +16,7 @@ class Product(models.Model):
     name = models.CharField(max_length=255)
     image = models.BinaryField(null=True, blank=True)
     price = models.IntegerField()
-    quantity = models.IntegerField()
+    in_stock = models.IntegerField()
     added_date = models.DateField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
     empty_date = models.DateField(null=True, blank=True)
