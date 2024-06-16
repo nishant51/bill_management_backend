@@ -39,7 +39,8 @@ class InvoiceItem(models.Model):
 
 class InvoiceBill(models.Model):
     id = models.AutoField(primary_key=True)
-    sold_product = models.ManyToManyField('InvoiceItem') 
+    name = models.CharField(max_length=500, blank=True, null= True)
+    Invoice_Item = models.ManyToManyField('InvoiceItem') 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
     bill_for = models.CharField(max_length=500, blank=True, null=True)
