@@ -42,7 +42,7 @@ class InvoiceItemSerializer(serializers.ModelSerializer):
 
     def get_product_info(self, obj):
         if obj.product:
-            return {'value': obj.product.id, 'label': obj.product.name}
+            return {'value': obj.product.id, 'label': obj.product.name, 'price':obj.product.price}
         return None
 
 class InvoiceBillSerializer(serializers.ModelSerializer):
@@ -53,7 +53,12 @@ class InvoiceBillSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_product_info(self, obj):
-        if obj.sold_product and obj.sold_product.product:
-            return {'value': obj.sold_product.product.id, 'label': obj.sold_product.product.name}
-        return None
+        product_info = []
+        for invoice_item in obj.sold_product.all():
+            product = invoice_item.product  # Assuming InvoiceItem has a 'product' ForeignKey field
+            product_info.append({
+                'value': product.id,
+                'label': product.name
+            })
+        return product_info if product_info else None
 
