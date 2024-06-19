@@ -54,6 +54,7 @@ class SubCategoryViewSet(viewsets.ModelViewSet):
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+from rest_framework.exceptions import NotFound
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
@@ -85,7 +86,25 @@ class ProductViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        
+        category_id = request.data.get('category')
+        sub_category_id = request.data.get('sub_category')
+        
+        category = None
+        sub_category = None
+        
+        if category_id:
+            try:
+                category = Category.objects.get(id=category_id)
+            except Category.DoesNotExist:
+                return Response({"detail": "Category not found."}, status=status.HTTP_404_NOT_FOUND)
+        if sub_category_id:
+            try:
+                sub_category = SubCategory.objects.get(id=sub_category_id)
+            except SubCategory.DoesNotExist:
+                return Response({"detail": "Sub-category not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer.save(category=category, sub_category=sub_category)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def partial_update(self, request, *args, **kwargs):
@@ -93,7 +112,25 @@ class ProductViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
+        
+        category_id = request.data.get('category')
+        sub_category_id = request.data.get('sub_category')
+        
+        category = None
+        sub_category = None
+        
+        if category_id:
+            try:
+                category = Category.objects.get(id=category_id)
+            except Category.DoesNotExist:
+                return Response({"detail": "Category not found."}, status=status.HTTP_404_NOT_FOUND)
+        if sub_category_id:
+            try:
+                sub_category = SubCategory.objects.get(id=sub_category_id)
+            except SubCategory.DoesNotExist:
+                return Response({"detail": "Sub-category not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer.save(category=category, sub_category=sub_category)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
