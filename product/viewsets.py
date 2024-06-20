@@ -139,7 +139,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class InvoiceItemViewSet(viewsets.ModelViewSet):
-    queryset = InvoiceItem.objects.all()
+    queryset = InvoiceItem.objects.all().order_by("-id")
     serializer_class = InvoiceItemSerializer
     pagination_class = TenPagination
     permission_classes = [IsAuthenticated]
