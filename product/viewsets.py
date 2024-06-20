@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from .models import Category, Product, InvoiceItem, InvoiceBill, SubCategory
 from .serializers import CategorySerializer, ProductSerializer, InvoiceItemSerializer, InvoiceBillSerializer, SubCategorySerializer
 from rest_framework.permissions import IsAuthenticated
-from .paginations import TenPagination
+from .paginations import FivePagination, TenPagination
 from django.db.models import Q
 
 
@@ -141,7 +141,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 class InvoiceItemViewSet(viewsets.ModelViewSet):
     queryset = InvoiceItem.objects.all().order_by("-id")
     serializer_class = InvoiceItemSerializer
-    pagination_class = TenPagination
+    pagination_class = FivePagination
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
