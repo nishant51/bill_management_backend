@@ -1,14 +1,14 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .models import Category, Product, InvoiceItem, InvoiceBill, SubCategory
-from .serializers import CategorySerializer, ProductSerializer, InvoiceItemSerializer, InvoiceBillSerializer, SubCategorySerializer
+from .serializers import CategorySerializer, ProductSerializer, InvoiceItemSerializer, InvoiceBillSerializer, SeparateCategorySerializer, SubCategorySerializer
 from rest_framework.permissions import IsAuthenticated
 from .paginations import FivePagination, TenPagination
 from django.db.models import Q
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.prefetch_related('subcategories').all()
+    queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
     def create(self, request, *args, **kwargs):
@@ -55,6 +55,29 @@ class SubCategoryViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 from rest_framework.exceptions import NotFound
+
+
+class separateCategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.prefetch_related('subcategories').all()
+    serializer_class = SeparateCategorySerializer
+    # pagination_class = FivePagination
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.query_params.get('search_name', None)
+        if query:
+            queryset = queryset.filter(name__icontains=query)
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response({'results': serializer.data})
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({'results': serializer.data})
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()

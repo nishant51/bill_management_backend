@@ -2,17 +2,31 @@ from rest_framework import serializers
 from .models import Category, Product, InvoiceItem, InvoiceBill, SubCategory
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+
 class SubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SubCategory
-        fields = ('id', 'name')
+        fields = '__all__'
+    
 
-class CategorySerializer(serializers.ModelSerializer):
+class SeparateCategorySerializer(serializers.ModelSerializer):
     subcategories = SubCategorySerializer(many=True, read_only=True)
+    total_subcategories = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
-        fields = ('id', 'name', 'subcategories')
+        fields = ('id', 'name', 'subcategories', 'total_subcategories')
+
+    def get_total_subcategories(self, obj):
+        try:
+            return obj.subcategories.count()  # Assuming subcategories is a related manager
+        except Exception as e:
+            raise serializers.ValidationError(f"Failed to retrieve total subcategories: {str(e)}")
 
 
 class ProductSerializer(serializers.ModelSerializer):
