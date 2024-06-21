@@ -57,10 +57,31 @@ class SubCategoryViewSet(viewsets.ModelViewSet):
 from rest_framework.exceptions import NotFound
 
 
+class separateSubCategoryViewSet(viewsets.ModelViewSet):
+    serializer_class = SubCategorySerializer
+    # pagination_class = FivePagination
+
+    def get_queryset(self):
+        category_id = self.kwargs.get('category_id')
+        queryset = SubCategory.objects.filter(category_id=category_id)
+        query = self.request.query_params.get('search_name', None)
+        if query:
+            queryset = queryset.filter(name__icontains=query)
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response({'results': serializer.data})
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({'results': serializer.data})
+
 class separateCategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.prefetch_related('subcategories').all()
     serializer_class = SeparateCategorySerializer
-    # pagination_class = FivePagination
 
     def get_queryset(self):
         queryset = super().get_queryset()
