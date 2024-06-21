@@ -8,7 +8,7 @@ from django.db.models import Q
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
+    queryset = Category.objects.prefetch_related('subcategories').all()
     serializer_class = CategorySerializer
 
     def create(self, request, *args, **kwargs):
