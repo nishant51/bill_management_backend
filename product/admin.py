@@ -40,9 +40,9 @@ class InvoiceItemAdmin(admin.ModelAdmin):
 
 @admin.register(InvoiceBill)
 class InvoiceBillAdmin(admin.ModelAdmin):
-    list_display = ('id', 'display_sold_products', 'bill_for', 'is_printed')
-    search_fields = ('sold_product__name',)
+    list_display = ('id', 'name', 'display_Invoice_Item', 'bill_for', 'is_printed')
+    search_fields = ('Invoice_Item__name',)
 
-    def display_sold_products(self, obj):
-        return ", ".join([item.product.name for item in obj.sold_product.all()])
-    display_sold_products.short_description = 'Sold Products'
+    def display_Invoice_Item(self, obj):
+        return ", ".join([item.product.name for item in obj.Invoice_Item.all()])
+    display_Invoice_Item.short_description = 'Sold Products'
