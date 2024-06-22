@@ -69,7 +69,7 @@ class InvoiceBillSerializer(serializers.ModelSerializer):
 
     def get_product_info(self, obj):
         product_info = []
-        for invoice_item in obj.sold_product.all():
+        for invoice_item in obj.Invoice_Item.all():
             product = invoice_item.product  # Assuming InvoiceItem has a 'product' ForeignKey field
             product_info.append({
                 'value': product.id,
