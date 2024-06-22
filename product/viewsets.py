@@ -191,6 +191,9 @@ class InvoiceItemViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         query = self.request.query_params.get('search_name', None)
+        excluded_ids = InvoiceBill.objects.values_list('Invoice_Item', flat=True)
+        queryset = queryset.exclude(id__in=excluded_ids)
+
         if query:
             queryset = queryset.filter(
                 Q(product__name__icontains=query)  #| 
