@@ -185,13 +185,13 @@ class ProductViewSet(viewsets.ModelViewSet):
 class InvoiceItemViewSet(viewsets.ModelViewSet):
     queryset = InvoiceItem.objects.all().order_by("-id")
     serializer_class = InvoiceItemSerializer
-    pagination_class = FivePagination
+    # pagination_class = FivePagination
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = super().get_queryset()
         query = self.request.query_params.get('search_name', None)
-        excluded_ids = InvoiceBill.objects.values_list('Invoice_Item', flat=True)
+        excluded_ids = InvoiceBill.objects.filter(is_printed = False).values_list('Invoice_Item', flat=True)
         queryset = queryset.exclude(id__in=excluded_ids)
 
         if query:
@@ -201,15 +201,15 @@ class InvoiceItemViewSet(viewsets.ModelViewSet):
             )
         return queryset
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        # page = self.paginate_queryset(queryset)
-        # if page is not None:
-        #     serializer = self.get_serializer(page, many=True)
-        #     return self.get_paginated_response(serializer.data)
+    # def list(self, request, *args, **kwargs):
+    #     queryset = self.filter_queryset(self.get_queryset())
+    #     # page = self.paginate_queryset(queryset)
+    #     # if page is not None:
+    #     #     serializer = self.get_serializer(page, many=True)
+    #     #     return self.get_paginated_response(serializer.data)
 
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+    #     serializer = self.get_serializer(queryset, many=True)
+    #     return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -273,3 +273,4 @@ class InvoiceBillViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
+   
