@@ -35,7 +35,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(InvoiceItem)
 class InvoiceItemAdmin(admin.ModelAdmin):
-    list_display = ('id', 'product', 'quantity', 'total_price', 'created_at', 'discount')
+    list_display = ('id', 'product', 'quantity', 'total_price', 'created_at', 'discount', 'sold_out')
     search_fields = ('product__name',)
 
 @admin.register(InvoiceBill)

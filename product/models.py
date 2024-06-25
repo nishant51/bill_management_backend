@@ -33,6 +33,8 @@ class InvoiceItem(models.Model):
     total_price = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     discount = models.FloatField(blank=True, null=True)
+    sold_out= models.BooleanField(default=False)
+
 
     def __str__(self):
         return f"Sold {self.quantity} of {self.product.name}"

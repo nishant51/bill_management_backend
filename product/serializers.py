@@ -53,7 +53,7 @@ class InvoiceItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = InvoiceItem
-        fields = '__all__'
+        fields = ['id', 'product_info', 'quantity', 'total_price', 'created_at', 'discount', 'product']
 
     def get_product_info(self, obj):
         if obj.product:

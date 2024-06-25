@@ -183,7 +183,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class InvoiceItemViewSet(viewsets.ModelViewSet):
-    queryset = InvoiceItem.objects.all().order_by("-id")
+    queryset = InvoiceItem.objects.filter(sold_out = False).order_by("-id")
     serializer_class = InvoiceItemSerializer
     # pagination_class = FivePagination
     permission_classes = [IsAuthenticated]
@@ -191,9 +191,6 @@ class InvoiceItemViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         query = self.request.query_params.get('search_name', None)
-        excluded_ids = InvoiceBill.objects.filter(is_printed = False).values_list('Invoice_Item', flat=True)
-        queryset = queryset.exclude(id__in=excluded_ids)
-
         if query:
             queryset = queryset.filter(
                 Q(product__name__icontains=query)  #| 
@@ -259,14 +256,19 @@ class InvoiceBillViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        instance = serializer.instance  # Get the created instance
+        if instance.is_printed:
+            instance.Invoice_Item.update(sold_out=True)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def partial_update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', True)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
+        if instance.is_printed:
+            instance.Invoice_Item.update(sold_out=True)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
