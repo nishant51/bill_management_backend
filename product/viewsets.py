@@ -3,8 +3,11 @@ from rest_framework.response import Response
 from .models import Category, Product, InvoiceItem, InvoiceBill, SubCategory
 from .serializers import CategorySerializer, ProductSerializer, InvoiceItemSerializer, InvoiceBillSerializer, SeparateCategorySerializer, SubCategorySerializer
 from rest_framework.permissions import IsAuthenticated
-from .paginations import FivePagination, TenPagination
+from .paginations import EightPagination, FivePagination, TenPagination
 from django.db.models import Q
+from django.db.models import Q
+from django.utils import timezone
+from datetime import datetime, timedelta, time
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -85,9 +88,13 @@ class separateCategoryViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        query = self.request.query_params.get('search_name', None)
-        if query:
-            queryset = queryset.filter(name__icontains=query)
+        search_name = self.request.query_params.get('search_name', None)
+        category = self.request.query_params.get('category', None)
+
+        if search_name:
+            queryset &= Q(name__icontains=search_name)
+        if category:
+            queryset &= Q(category=category)
         return queryset
 
     def list(self, request, *args, **kwargs):
@@ -103,7 +110,7 @@ class separateCategoryViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all().order_by("-id")
     serializer_class = ProductSerializer
-    pagination_class = TenPagination
+    pagination_class = EightPagination
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
