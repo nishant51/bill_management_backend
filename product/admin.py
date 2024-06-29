@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, InvoiceItem, InvoiceBill
+from .models import  Product, InvoiceItem, InvoiceBill
 from .models import Category, SubCategory
 
 class SubCategoryInline(admin.TabularInline):
@@ -46,3 +46,5 @@ class InvoiceBillAdmin(admin.ModelAdmin):
     def display_Invoice_Item(self, obj):
         return ", ".join([item.product.name for item in obj.Invoice_Item.all()])
     display_Invoice_Item.short_description = 'Sold Products'
+
+
