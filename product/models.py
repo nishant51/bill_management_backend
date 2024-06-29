@@ -42,14 +42,18 @@ class InvoiceItem(models.Model):
 class InvoiceBill(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=500, blank=True, null= True)
-    Invoice_Item = models.ManyToManyField('InvoiceItem') 
+    Invoice_Item = models.ManyToManyField('InvoiceItem')
+    address = models.CharField(max_length=600, blank= True, null= True)
+    invoice_number = models.CharField(max_length=200, blank=True , null=True)
     total_price = models.FloatField(blank=True, null=True)
     credit_amt = models.FloatField(blank=True, null=True)
     paid_amt = models.FloatField(blank=True, null=True)
+    mode_of_payment= models.CharField(max_length=250, blank= True, null= True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
     bill_for = models.CharField(max_length=500, blank=True, null=True)
     is_printed= models.BooleanField(default=False)
+    remark = models.TextField(blank= True,  null= True)
 
     def __str__(self):
         return f"invoice bill ID: {self.id}"
