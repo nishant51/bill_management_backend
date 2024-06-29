@@ -242,11 +242,13 @@ class InvoiceBillViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        query = self.request.query_params.get('search_name', None)
-        if query:
-            queryset = queryset.filter(
-                Q(sold_product__product__name__icontains=query)  #| 
-            )
+        search_name = self.request.query_params.get('search_name', None)
+        customer_name = self.request.query_params.get('customer_name', None)
+
+        if search_name:
+            queryset &= Q(name__icontains=search_name)
+        if customer_name:
+            queryset &= Q(bill_for__icontains=customer_name)
         return queryset
 
     def list(self, request, *args, **kwargs):

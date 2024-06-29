@@ -44,6 +44,8 @@ class InvoiceBill(models.Model):
     name = models.CharField(max_length=500, blank=True, null= True)
     Invoice_Item = models.ManyToManyField('InvoiceItem') 
     total_price = models.FloatField(blank=True, null=True)
+    credit_amt = models.FloatField(blank=True, null=True)
+    paid_amt = models.FloatField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
     bill_for = models.CharField(max_length=500, blank=True, null=True)
