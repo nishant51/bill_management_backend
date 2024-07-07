@@ -115,13 +115,13 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        query = self.request.query_params.get('search_name', None)
-        if query:
-            # Filter queryset based on the 'q' parameter
-            queryset = queryset.filter(
-                Q(name__icontains=query)  #| 
-                # Q(description__icontains=query)  # Example: Filter by description
-            )
+        search_name = self.request.query_params.get('search_name', None)
+        category = self.request.query_params.get('category', None)
+
+        if search_name:
+            queryset &= Q(name__icontains=search_name)
+        if category:
+            queryset &= Q(category=category)
         return queryset
 
     def list(self, request, *args, **kwargs):

@@ -40,6 +40,12 @@ class InvoiceItem(models.Model):
         return f"Sold {self.quantity} of {self.product.name}"
 
 class InvoiceBill(models.Model):
+    PAYMENT_MODE_CHOICES = [
+        ('cash', 'cash'),
+        ('credit', 'credit'),
+        ('ONLINE', 'Online'),
+        ('CHEQUE', 'Cheque'),
+    ]
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=500, blank=True, null= True)
     Invoice_Item = models.ManyToManyField('InvoiceItem')
@@ -48,7 +54,12 @@ class InvoiceBill(models.Model):
     total_price = models.FloatField(blank=True, null=True)
     credit_amt = models.FloatField(blank=True, null=True)
     paid_amt = models.FloatField(blank=True, null=True)
-    mode_of_payment= models.CharField(max_length=250, blank= True, null= True)
+    mode_of_payment = models.CharField(
+            max_length=250, 
+            choices=PAYMENT_MODE_CHOICES, 
+            blank=True, 
+            null=True
+        )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
     bill_for = models.CharField(max_length=500, blank=True, null=True)
