@@ -62,6 +62,7 @@ class InvoiceBill(models.Model):
         )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
+    contact_no = models.CharField(max_length=50, blank=True, null=True)
     bill_for = models.CharField(max_length=500, blank=True, null=True)
     is_printed= models.BooleanField(default=False)
     remark = models.TextField(blank= True,  null= True)
