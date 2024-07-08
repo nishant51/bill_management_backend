@@ -119,9 +119,10 @@ class ProductViewSet(viewsets.ModelViewSet):
         category = self.request.query_params.get('category', None)
 
         if search_name:
-            queryset &= Q(name__icontains=search_name)
+            queryset = queryset.filter(Q(name__icontains=search_name))
         if category:
-            queryset &= Q(category=category)
+            queryset = queryset.filter(Q(category=category))
+            
         return queryset
 
     def list(self, request, *args, **kwargs):
@@ -243,12 +244,13 @@ class InvoiceBillViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         search_name = self.request.query_params.get('search_name', None)
-        customer_name = self.request.query_params.get('customer_name', None)
+        category = self.request.query_params.get('category', None)
 
         if search_name:
-            queryset &= Q(name__icontains=search_name)
-        if customer_name:
-            queryset &= Q(bill_for__icontains=customer_name)
+            queryset = queryset.filter(Q(name__icontains=search_name))
+        if category:
+            queryset = queryset.filter(Q(category=category))
+            
         return queryset
 
     def list(self, request, *args, **kwargs):
