@@ -50,7 +50,7 @@ class InvoiceBill(models.Model):
         ('CHEQUE', 'Cheque'),
     ]
     id = models.AutoField(primary_key=True)
-    code = models.CharField(max_length=200, unique=True, blank=True, null=True)
+    code = models.CharField(max_length=200, blank=True, null=True)
     name = models.CharField(max_length=500, blank=True, null= True)
     Invoice_Item = models.ManyToManyField('InvoiceItem')
     address = models.CharField(max_length=600, blank= True, null= True)
