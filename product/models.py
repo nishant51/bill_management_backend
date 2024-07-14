@@ -19,6 +19,7 @@ class Product(models.Model):
     in_stock = models.IntegerField()
     added_date = models.DateField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
+    unit = models.CharField(blank = True, null = True)
     empty_date = models.DateField(null=True, blank=True)
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE,null=True, blank=True)
     sub_category = models.ForeignKey(SubCategory, related_name='products_sub_category', on_delete=models.CASCADE,null=True, blank=True)
@@ -60,7 +61,6 @@ class InvoiceBill(models.Model):
             blank=True, 
             null=True
         )
-    unit = models.CharField(blank = True, null = True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
     np_created_at = models.DateTimeField(blank= True, null= True)
