@@ -14,5 +14,6 @@ router.register(r'InvoiceBills', InvoiceBillViewSet, basename='InvoiceBill')
 urlpatterns = [
     path('', include(router.urls)),
     path('allSubCategory/<int:category_id>/', separateSubCategoryViewSet.as_view({'get': 'list'}), name='subcategory-list'),
+    path('invoicebills/total_paid/', InvoiceBillViewSet.as_view({'get': 'total_paid'}), name='total-paid')
 
 ]

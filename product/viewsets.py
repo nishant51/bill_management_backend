@@ -8,7 +8,8 @@ from django.db.models import Q
 from django.db.models import Q
 from django.utils import timezone
 from datetime import datetime, timedelta, time
-
+from rest_framework.decorators import action
+from django.db.models import Sum
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
@@ -286,4 +287,12 @@ class InvoiceBillViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    def total_paid(self, request):
+        total_paid_amt = InvoiceBill.objects.aggregate(total_paid=Sum('paid_amt'))['total_paid']
+        return Response({'total_paid_amt': total_paid_amt})
    
+
+
+
+
