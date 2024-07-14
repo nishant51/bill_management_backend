@@ -292,7 +292,3 @@ class InvoiceBillViewSet(viewsets.ModelViewSet):
         total_paid_amt = InvoiceBill.objects.aggregate(total_paid=Sum('paid_amt'))['total_paid']
         return Response({'total_paid_amt': total_paid_amt})
    
-
-
-
-
