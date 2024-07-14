@@ -63,6 +63,8 @@ class InvoiceBill(models.Model):
     unit = models.CharField(blank = True, null = True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
+    np_created_at = models.DateTimeField(blank= True, null= True)
+    np_updated_date = models.DateField(blank= True, null= True)
     invoice_miti = models.DateField(blank= True, null= True)
     contact_no = models.CharField(max_length=50, blank=True, null=True)
     bill_for = models.CharField(max_length=500, blank=True, null=True)
