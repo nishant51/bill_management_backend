@@ -60,6 +60,7 @@ class InvoiceBill(models.Model):
             blank=True, 
             null=True
         )
+    unit = models.CharField(blank= True, null = True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
     contact_no = models.CharField(max_length=50, blank=True, null=True)
