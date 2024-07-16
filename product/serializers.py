@@ -57,7 +57,7 @@ class InvoiceItemSerializer(serializers.ModelSerializer):
 
     def get_product_info(self, obj):
         if obj.product:
-            return {'value': obj.product.id, 'label': obj.product.name, 'price':obj.product.price, 'in_stock':obj.product.in_stock}
+            return {'value': obj.product.id, 'label': obj.product.name, 'price':obj.product.price, 'in_stock':obj.product.in_stock, 'unit':obj.product.unit}
         return None
 
 class InvoiceBillSerializer(serializers.ModelSerializer):
