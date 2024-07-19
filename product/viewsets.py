@@ -242,13 +242,13 @@ class InvoiceBillViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        search_name = self.request.query_params.get('search_name', None)
-        category = self.request.query_params.get('category', None)
+        customer_name = self.request.query_params.get('customer_name', None)
+        mode_of_payment = self.request.query_params.get('mode_of_payment', None)
 
-        if search_name:
-            queryset = queryset.filter(Q(name__icontains=search_name))
-        if category:
-            queryset = queryset.filter(Q(category=category))
+        if customer_name:
+            queryset = queryset.filter(Q(bill_for__icontains=customer_name))
+        if mode_of_payment:
+            queryset = queryset.filter(Q(mode_of_payment=mode_of_payment))
             
         return queryset
 
