@@ -73,6 +73,8 @@ class InvoiceBill(models.Model):
     bill_for = models.CharField(max_length=500, blank=True, null=True)
     is_printed= models.BooleanField(default=False)
     remark = models.TextField(blank= True,  null= True)
+    pdf = models.FileField(upload_to='documents/', blank=True, null= True)
+
 
     # def save(self, *args, **kwargs):
     #         if not self.code:
