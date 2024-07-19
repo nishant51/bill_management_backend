@@ -199,12 +199,10 @@ class InvoiceItemViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        query = self.request.query_params.get('search_name', None)
-        if query:
-            queryset = queryset.filter(
-                Q(product__name__icontains=query)  #| 
-                # Q(description__icontains=query)  
-            )
+        search_name = self.request.query_params.get('search_name', None)
+
+        if search_name:
+            queryset = queryset.filter(Q(name__icontains=search_name))
         return queryset
 
     # def list(self, request, *args, **kwargs):
@@ -268,7 +266,7 @@ class InvoiceBillViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        instance = serializer.instance  # Get the created instance
+        instance = serializer.instance  
         if instance.is_printed:
             instance.Invoice_Item.update(sold_out=True)
         headers = self.get_success_headers(serializer.data)
