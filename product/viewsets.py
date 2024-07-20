@@ -235,7 +235,7 @@ class InvoiceItemViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class InvoiceBillViewSet(viewsets.ModelViewSet):
-    queryset = InvoiceBill.objects.all()
+    queryset = InvoiceBill.objects.order_by("-id")
     serializer_class = InvoiceBillSerializer
     pagination_class = TenPagination
     permission_classes = [IsAuthenticated]
