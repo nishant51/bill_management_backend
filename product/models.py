@@ -20,6 +20,7 @@ class Product(models.Model):
     price = models.IntegerField()
     in_stock = models.IntegerField()
     added_date = models.DateField(auto_now_add=True)
+    invoice_miti = models.CharField(max_length=200, blank=True , null=True)
     updated_date = models.DateField(auto_now=True)
     unit = models.CharField(blank = True, null = True)
     empty_date = models.DateField(null=True, blank=True)
