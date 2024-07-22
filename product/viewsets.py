@@ -290,3 +290,18 @@ class InvoiceBillViewSet(viewsets.ModelViewSet):
         total_paid_amt = InvoiceBill.objects.aggregate(total_paid=Sum('paid_amt'))['total_paid']
         return Response({'total_paid_amt': total_paid_amt})
    
+
+from rest_framework.views import APIView
+
+class LatestInvoiceBillView(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            latest_invoice = InvoiceBill.objects.latest('created_at')
+            serializer = InvoiceBillSerializer(latest_invoice)
+            data = {
+                'id': serializer.data['id'],
+                'name': serializer.data['name']
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except InvoiceBill.DoesNotExist:
+            return Response({"detail": "No invoice bills found."}, status=status.HTTP_404_NOT_FOUND)
