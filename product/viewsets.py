@@ -287,28 +287,53 @@ class InvoiceBillViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
     def get_totals(self, request):
-        # Aggregating the total paid, total credit, and total bill price
-        aggregates = InvoiceBill.objects.aggregate(
-            total_paid=Sum('paid_amt'),
-            total_credit=Sum('credit_amt'),
-            total_bill_price=Sum('total_price')
-        )
+        try:
+            # Aggregating the total paid, total credit, and total bill price
+            aggregates = InvoiceBill.objects.aggregate(
+                total_paid=Sum('paid_amt'),
+                total_credit=Sum('credit_amt'),
+                total_bill_price=Sum('total_price')
+            )
+
+            # Filtering InvoiceItem related to InvoiceBill
+            invoice_items = InvoiceItem.objects.filter(invoicebill__isnull=False)
+
+            # Aggregating the total quantity sold and total in-stock quantity
+            total_quantity_sold = invoice_items.aggregate(total_sold=Sum('quantity'))['total_sold']
+            total_in_stock = Product.objects.aggregate(total_stock=Sum('in_stock'))['total_stock']
+
+            # Aggregating the total sold items by product
+            products_sold = invoice_items.values('product__name').annotate(total_sold=Sum('quantity')).order_by('product__name')
+
+            return Response({
+                'total_paid_amt': aggregates['total_paid'],
+                'total_credit_amt': aggregates['total_credit'],
+                'total_bill_price': aggregates['total_bill_price'],
+                'total_quantity_sold': total_quantity_sold,
+                'total_in_stock': total_in_stock,
+                'products_sold': list(products_sold)
+            }, status=status.HTTP_200_OK)
+
+        except InvoiceBill.DoesNotExist:
+            return Response({
+                'error': 'InvoiceBill data does not exist.'
+            }, status=status.HTTP_404_NOT_FOUND)
         
-        # Aggregating the total quantity sold and total in-stock quantity
-        total_quantity_sold = InvoiceItem.objects.aggregate(total_sold=Sum('quantity'))['total_sold']
-        total_in_stock = Product.objects.aggregate(total_stock=Sum('in_stock'))['total_stock']
+        except InvoiceItem.DoesNotExist:
+            return Response({
+                'error': 'InvoiceItem data does not exist.'
+            }, status=status.HTTP_404_NOT_FOUND)
         
-        # Aggregating the total sold items by product
-        products_sold = InvoiceItem.objects.values('product__name').annotate(total_sold=Sum('quantity')).order_by('product__name')
+        except Product.DoesNotExist:
+            return Response({
+                'error': 'Product data does not exist.'
+            }, status=status.HTTP_404_NOT_FOUND)
         
-        return Response({
-            'total_paid_amt': aggregates['total_paid'],
-            'total_credit_amt': aggregates['total_credit'],
-            'total_bill_price': aggregates['total_bill_price'],
-            'total_quantity_sold': total_quantity_sold,
-            'total_in_stock': total_in_stock,
-            'products_sold': list(products_sold)
-        })
+        except Exception as e:
+            return Response({
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     
 
 from rest_framework.views import APIView
