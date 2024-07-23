@@ -289,7 +289,15 @@ class InvoiceBillViewSet(viewsets.ModelViewSet):
     def total_paid(self, request):
         total_paid_amt = InvoiceBill.objects.aggregate(total_paid=Sum('paid_amt'))['total_paid']
         return Response({'total_paid_amt': total_paid_amt})
-   
+    
+    def total_credit(self, request):
+        total_credit_amt = InvoiceBill.objects.aggregate(total_credit=Sum('credit_amt'))['total_credit']
+        return Response({'total_credit_amt': total_credit_amt})
+    
+    def total_bill_price(self, request):
+        total_bill_price = InvoiceBill.objects.aggregate(total_bill_price=Sum('total_price'))['total_bill_price']
+        return Response({'total_bill_price': total_bill_price})
+    
 
 from rest_framework.views import APIView
 

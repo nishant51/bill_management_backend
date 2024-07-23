@@ -88,3 +88,14 @@ class InvoiceBill(models.Model):
 
     def __str__(self):
         return f"invoice bill ID: {self.id}"
+
+
+from django.db import models
+
+# Create your models here.
+class PasswordResetCode(models.Model):
+    email = models.EmailField(unique=True)
+    code = models.CharField(max_length=6)
+
+    def __str__(self):
+        return self.email
