@@ -16,9 +16,9 @@ router.register(r'InvoiceBills', InvoiceBillViewSet, basename='InvoiceBill')
 urlpatterns = [
     path('', include(router.urls)),
     path('allSubCategory/<int:category_id>/', separateSubCategoryViewSet.as_view({'get': 'list'}), name='subcategory-list'),
-    path('invoicebills/total_paid/', InvoiceBillViewSet.as_view({'get': 'total_paid'}), name='total-paid'),
-    path('invoicebills/total_credit/', InvoiceBillViewSet.as_view({'get': 'total_credit'}), name='total_credit'),
-    path('invoicebills/total_bill_price/', InvoiceBillViewSet.as_view({'get': 'total_bill_price'}), name='total_bill_price'),
+    path('invoicebills/total_paid/', InvoiceBillViewSet.as_view({'get': 'get_totals'}), name='get_totals'),
+    # path('invoicebills/total_credit/', InvoiceBillViewSet.as_view({'get': 'total_credit'}), name='total_credit'),
+    # path('invoicebills/total_bill_price/', InvoiceBillViewSet.as_view({'get': 'total_bill_price'}), name='total_bill_price'),
 
     path("forgot-password/generate/",ForgotPasswordApi.as_view({"post": "Generate"}), name="forgotpassword-generate"),
     path("forgot-password/verify/", ForgotPasswordApi.as_view({"post": "verify"}), name="forgotpassword-verify" ),

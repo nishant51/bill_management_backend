@@ -286,17 +286,29 @@ class InvoiceBillViewSet(viewsets.ModelViewSet):
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-    def total_paid(self, request):
-        total_paid_amt = InvoiceBill.objects.aggregate(total_paid=Sum('paid_amt'))['total_paid']
-        return Response({'total_paid_amt': total_paid_amt})
-    
-    def total_credit(self, request):
-        total_credit_amt = InvoiceBill.objects.aggregate(total_credit=Sum('credit_amt'))['total_credit']
-        return Response({'total_credit_amt': total_credit_amt})
-    
-    def total_bill_price(self, request):
-        total_bill_price = InvoiceBill.objects.aggregate(total_bill_price=Sum('total_price'))['total_bill_price']
-        return Response({'total_bill_price': total_bill_price})
+    def get_totals(self, request):
+        # Aggregating the total paid, total credit, and total bill price
+        aggregates = InvoiceBill.objects.aggregate(
+            total_paid=Sum('paid_amt'),
+            total_credit=Sum('credit_amt'),
+            total_bill_price=Sum('total_price')
+        )
+        
+        # Aggregating the total quantity sold and total in-stock quantity
+        total_quantity_sold = InvoiceItem.objects.aggregate(total_sold=Sum('quantity'))['total_sold']
+        total_in_stock = Product.objects.aggregate(total_stock=Sum('in_stock'))['total_stock']
+        
+        # Aggregating the total sold items by product
+        products_sold = InvoiceItem.objects.values('product__name').annotate(total_sold=Sum('quantity')).order_by('product__name')
+        
+        return Response({
+            'total_paid_amt': aggregates['total_paid'],
+            'total_credit_amt': aggregates['total_credit'],
+            'total_bill_price': aggregates['total_bill_price'],
+            'total_quantity_sold': total_quantity_sold,
+            'total_in_stock': total_in_stock,
+            'products_sold': list(products_sold)
+        })
     
 
 from rest_framework.views import APIView
