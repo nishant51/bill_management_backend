@@ -324,4 +324,8 @@ class LatestInvoiceBillView(APIView):
             }
             return Response(data, status=status.HTTP_200_OK)
         except InvoiceBill.DoesNotExist:
-            return Response({"detail": "No invoice bills found."}, status=status.HTTP_404_NOT_FOUND)
+            data = {
+                'id': 0,
+                'name': None
+            }
+            return Response(data, status=status.HTTP_200_OK)
