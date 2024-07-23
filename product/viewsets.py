@@ -12,7 +12,7 @@ from rest_framework.decorators import action
 from django.db.models import Sum
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().order_by("id")
     serializer_class = CategorySerializer
 
     def create(self, request, *args, **kwargs):
@@ -36,7 +36,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 
 class SubCategoryViewSet(viewsets.ModelViewSet):
-    queryset = SubCategory.objects.all()
+    queryset = SubCategory.objects.all().order_by("id")
     serializer_class = SubCategorySerializer
 
     def create(self, request, *args, **kwargs):
@@ -84,7 +84,7 @@ class separateSubCategoryViewSet(viewsets.ModelViewSet):
         return Response({'results': serializer.data})
 
 class separateCategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.prefetch_related('subcategories').all()
+    queryset = Category.objects.prefetch_related('subcategories').all().order_by("id")
     serializer_class = SeparateCategorySerializer
 
     def get_queryset(self):
@@ -109,7 +109,7 @@ class separateCategoryViewSet(viewsets.ModelViewSet):
         return Response({'results': serializer.data})
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all().order_by("-id")
+    queryset = Product.objects.all().order_by("id")
     serializer_class = ProductSerializer
     pagination_class = EightPagination
     permission_classes = [IsAuthenticated]
