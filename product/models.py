@@ -51,7 +51,6 @@ class InvoiceBill(models.Model):
         ('CHEQUE', 'Cheque'),
     ]
     id = models.AutoField(primary_key=True)
-    # code = models.CharField(max_length=200, blank=True, null=True)
 
     name = models.CharField(max_length=500, blank=True, null= True)
     Invoice_Item = models.ManyToManyField('InvoiceItem')
@@ -76,15 +75,6 @@ class InvoiceBill(models.Model):
     remark = models.TextField(blank= True,  null= True)
     pdf = models.FileField(upload_to='documents/', blank=True, null= True)
 
-
-    # def save(self, *args, **kwargs):
-    #         if not self.code:
-    #             # Get the current year and convert it to the Nepali year
-    #             current_year = datetime.now().year
-    #             nepali_year = current_year + 56  # Adjusting the year difference
-    #             super().save(*args, **kwargs)  # Save first to get the id
-    #             self.code = f"{nepali_year}/{self.id}"
-    #         super().save(*args, **kwargs)
 
     def __str__(self):
         return f"invoice bill ID: {self.id}"
