@@ -109,7 +109,7 @@ class separateCategoryViewSet(viewsets.ModelViewSet):
         return Response({'results': serializer.data})
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all().order_by("id")
+    queryset = Product.objects.all().order_by("-id")
     serializer_class = ProductSerializer
     pagination_class = EightPagination
     permission_classes = [IsAuthenticated]
