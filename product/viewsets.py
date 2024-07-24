@@ -303,7 +303,7 @@ class InvoiceBillViewSet(viewsets.ModelViewSet):
             total_in_stock = Product.objects.aggregate(total_stock=Sum('in_stock'))['total_stock']
 
             # Aggregating the total sold items by product
-            products_sold = invoice_items.values('product__name').annotate(total_sold=Sum('quantity')).order_by('product__name')
+            products_sold = invoice_items.values('product__name').annotate(total_sold=Sum('quantity')).order_by('-total_sold')[:6]
 
             return Response({
                 'total_paid_amt': aggregates['total_paid'],
