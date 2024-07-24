@@ -12,7 +12,7 @@ from rest_framework.decorators import action
 from django.db.models import Sum
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all().order_by("id")
+    queryset = Category.objects.all().order_by("-id")
     serializer_class = CategorySerializer
 
     def create(self, request, *args, **kwargs):
