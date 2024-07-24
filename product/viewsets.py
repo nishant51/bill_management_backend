@@ -84,7 +84,7 @@ class separateSubCategoryViewSet(viewsets.ModelViewSet):
         return Response({'results': serializer.data})
 
 class separateCategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.prefetch_related('subcategories').all().order_by("id")
+    queryset = Category.objects.prefetch_related('subcategories').all().order_by("-id")
     serializer_class = SeparateCategorySerializer
 
     def get_queryset(self):
