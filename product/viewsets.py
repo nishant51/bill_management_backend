@@ -348,6 +348,6 @@ class LatestInvoiceBillView(APIView):
             return Response(data, status=status.HTTP_200_OK)
         except TrackingInvoiceBillId.DoesNotExist:
             data = {
-                'id': None
+                'id': 0
             }
             return Response(data, status=status.HTTP_200_OK)
