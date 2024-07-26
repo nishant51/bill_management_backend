@@ -89,3 +89,6 @@ class PasswordResetCode(models.Model):
 
     def __str__(self):
         return self.email
+    
+class TrackingInvoiceBillId(models.Model):
+    ref_id = models.CharField( max_length=5, blank=True, null= True)

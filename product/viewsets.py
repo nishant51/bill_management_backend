@@ -1,6 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from .models import Category, Product, InvoiceItem, InvoiceBill, SubCategory
+from .models import Category, Product, InvoiceItem, InvoiceBill, SubCategory, TrackingInvoiceBillId
 from .serializers import CategorySerializer, ProductSerializer, InvoiceItemSerializer, InvoiceBillSerializer, SeparateCategorySerializer, SubCategorySerializer
 from rest_framework.permissions import IsAuthenticated
 from .paginations import EightPagination, FivePagination, TenPagination
@@ -341,16 +341,13 @@ from rest_framework.views import APIView
 class LatestInvoiceBillView(APIView):
     def get(self, request, *args, **kwargs):
         try:
-            latest_invoice = InvoiceBill.objects.latest('created_at')
-            serializer = InvoiceBillSerializer(latest_invoice)
+            latest_tracking = TrackingInvoiceBillId.objects.latest('id')
             data = {
-                'id': serializer.data['id'],
-                'name': serializer.data['name']
+                'ref_id': latest_tracking.ref_id
             }
             return Response(data, status=status.HTTP_200_OK)
-        except InvoiceBill.DoesNotExist:
+        except TrackingInvoiceBillId.DoesNotExist:
             data = {
-                'id': 0,
-                'name': None
+                'ref_id': 0
             }
             return Response(data, status=status.HTTP_200_OK)

@@ -34,3 +34,14 @@ def update_product_stock_on_delete(sender, instance, **kwargs):
     product = instance.product
     product.in_stock += instance.quantity
     product.save()
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from .models import InvoiceBill, TrackingInvoiceBillId
+
+@receiver(post_save, sender=InvoiceBill)
+def update_tracking_invoice_bill_id(sender, instance, created, **kwargs):
+    if created:
+        TrackingInvoiceBillId.objects.all().delete()
+        
+        TrackingInvoiceBillId.objects.create(ref_id=str(instance.id))
