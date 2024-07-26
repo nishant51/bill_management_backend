@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.utils import timezone
 from datetime import datetime, timedelta, time
 from rest_framework.decorators import action
-from django.db.models import Sum
+from django.db.models import Sum, Avg, Count, F, ExpressionWrapper, FloatField
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all().order_by("-id")
@@ -295,6 +295,13 @@ class InvoiceBillViewSet(viewsets.ModelViewSet):
                 total_bill_price=Sum('total_price')
             )
 
+            # Counting the total number of InvoiceBill instances created till now
+            total_invoice_bills = InvoiceBill.objects.count()
+
+            # Calculating the average order value as total transactions amount / number of transactions
+            total_transactions_amount = aggregates['total_bill_price']
+            average_order_value = total_transactions_amount / total_invoice_bills if total_invoice_bills > 0 else 0
+
             # Filtering InvoiceItem related to InvoiceBill
             invoice_items = InvoiceItem.objects.filter(invoicebill__isnull=False)
 
@@ -305,34 +312,43 @@ class InvoiceBillViewSet(viewsets.ModelViewSet):
             # Aggregating the total sold items by product
             products_sold = invoice_items.values('product__name').annotate(total_sold=Sum('quantity')).order_by('-total_sold')[:6]
 
+            # Calculating the total inventory value
+            total_inventory_value = Product.objects.aggregate(
+                total_value=Sum(ExpressionWrapper(F('price') * F('in_stock'), output_field=FloatField()))
+            )['total_value']
+
             return Response({
                 'total_paid_amt': aggregates['total_paid'],
                 'total_credit_amt': aggregates['total_credit'],
                 'total_bill_price': aggregates['total_bill_price'],
                 'total_quantity_sold': total_quantity_sold,
                 'total_in_stock': total_in_stock,
-                'products_sold': list(products_sold)
+                'products_sold': list(products_sold),
+                'average_order_value': average_order_value,
+                'total_invoice_bills': total_invoice_bills,
+                'total_inventory_value': total_inventory_value
             }, status=status.HTTP_200_OK)
 
         except InvoiceBill.DoesNotExist:
             return Response({
                 'error': 'InvoiceBill data does not exist.'
             }, status=status.HTTP_404_NOT_FOUND)
-        
+
         except InvoiceItem.DoesNotExist:
             return Response({
                 'error': 'InvoiceItem data does not exist.'
             }, status=status.HTTP_404_NOT_FOUND)
-        
+
         except Product.DoesNotExist:
             return Response({
                 'error': 'Product data does not exist.'
             }, status=status.HTTP_404_NOT_FOUND)
-        
+
         except Exception as e:
             return Response({
                 'error': str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
     
 
