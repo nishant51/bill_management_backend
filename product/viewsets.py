@@ -358,8 +358,9 @@ class LatestInvoiceBillView(APIView):
     def get(self, request, *args, **kwargs):
         try:
             latest_tracking = TrackingInvoiceBillId.objects.latest('id')
+            ref_id = int(latest_tracking.ref_id)
             data = {
-                'id': latest_tracking.ref_id
+                'id': ref_id
             }
             return Response(data, status=status.HTTP_200_OK)
         except TrackingInvoiceBillId.DoesNotExist:
