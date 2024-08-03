@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import  Product, InvoiceItem, InvoiceBill
+from .models import  ImportProduct, Product, InvoiceItem, InvoiceBill
 from .models import Category, SubCategory
 
 class SubCategoryInline(admin.TabularInline):
@@ -48,3 +48,23 @@ class InvoiceBillAdmin(admin.ModelAdmin):
     display_Invoice_Item.short_description = 'Sold Products'
 
 
+
+
+@admin.register(ImportProduct)
+class ImportProductAdmin(admin.ModelAdmin):
+    list_display = ('Bill_no', 'name', 'quantity', 'total_amount', 'credit_amt', 'paid_amt', 'mode_of_payment', 'invoice_miti')
+    search_fields = ('Bill_no', 'name')
+    list_filter = ('mode_of_payment', 'invoice_miti')
+    ordering = ('-invoice_miti',)
+    readonly_fields = ('total_amount', 'credit_amt', 'paid_amt')
+
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'quantity', 'total_amount', 'credit_amt', 'paid_amt', 'mode_of_payment', 'invoice_miti', 'Bill_no')
+        }),
+    )
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:  # Editing an existing object
+            return self.readonly_fields + ('Bill_no',)
+        return self.readonly_fields

@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from dashboard.viewsets import ForgotPasswordApi, resetpassword
-from .viewsets import CategoryViewSet, LatestInvoiceBillView, ProductViewSet, InvoiceItemViewSet, InvoiceBillViewSet, SubCategoryViewSet, separateCategoryViewSet, separateSubCategoryViewSet
+from .viewsets import CategoryViewSet, ImportProductViewSet, LatestInvoiceBillView, ProductViewSet, InvoiceItemViewSet, InvoiceBillViewSet, SubCategoryViewSet, separateCategoryViewSet, separateSubCategoryViewSet
 
 router = DefaultRouter()
 
@@ -12,6 +12,8 @@ router.register(r'sub-category', SubCategoryViewSet, basename='sub-catergory')
 router.register(r'products', ProductViewSet, basename='product')
 router.register(r'InvoiceItems', InvoiceItemViewSet, basename='soldproduct')
 router.register(r'InvoiceBills', InvoiceBillViewSet, basename='InvoiceBill')
+router.register(r'ImportProducts', ImportProductViewSet, basename='ImportProductViewSet')
+
 
 urlpatterns = [
     path('', include(router.urls)),

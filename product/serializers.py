@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Product, InvoiceItem, InvoiceBill, SubCategory
+from .models import Category, ImportProduct, Product, InvoiceItem, InvoiceBill, SubCategory
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -78,3 +78,7 @@ class InvoiceBillSerializer(serializers.ModelSerializer):
             })
         return product_info if product_info else None
 
+class ImportProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ImportProduct
+        fields = '__all__'

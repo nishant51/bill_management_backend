@@ -92,3 +92,32 @@ class PasswordResetCode(models.Model):
     
 class TrackingInvoiceBillId(models.Model):
     ref_id = models.CharField( max_length=5, blank=True, null= True)
+
+
+
+class ImportProduct(models.Model):
+    PAYMENT_MODE_CHOICES = [
+        ('cash', 'cash'),
+        ('credit', 'credit'),
+        ('ONLINE', 'Online'),
+        ('CHEQUE', 'Cheque'),
+    ]
+    name = models.CharField(max_length=500, null= True, blank= True)
+    total_amount = models.FloatField(blank=True, null=True)
+    credit_amt = models.FloatField(blank=True, null=True)
+    paid_amt = models.FloatField(blank=True, null=True)
+    mode_of_payment = models.CharField(
+            max_length=250, 
+            choices=PAYMENT_MODE_CHOICES, 
+            blank=True, 
+            null=True
+        )
+    name = models.CharField(max_length=255)
+    quantity = models.PositiveIntegerField()
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    invoice_miti = models.DateField()
+    Bill_no = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return f"Invoice {self.Bill_no} - {self.name}"
+    

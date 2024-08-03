@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from .models import Category, Product, InvoiceItem, InvoiceBill, SubCategory, TrackingInvoiceBillId
-from .serializers import CategorySerializer, ProductSerializer, InvoiceItemSerializer, InvoiceBillSerializer, SeparateCategorySerializer, SubCategorySerializer
+from .models import Category, ImportProduct, Product, InvoiceItem, InvoiceBill, SubCategory, TrackingInvoiceBillId
+from .serializers import CategorySerializer, ImportProductSerializer, ProductSerializer, InvoiceItemSerializer, InvoiceBillSerializer, SeparateCategorySerializer, SubCategorySerializer
 from rest_framework.permissions import IsAuthenticated
 from .paginations import EightPagination, FivePagination, TenPagination
 from django.db.models import Q
@@ -10,6 +10,7 @@ from django.utils import timezone
 from datetime import datetime, timedelta, time
 from rest_framework.decorators import action
 from django.db.models import Sum, Avg, Count, F, ExpressionWrapper, FloatField
+from rest_framework.views import APIView
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all().order_by("-id")
@@ -352,7 +353,6 @@ class InvoiceBillViewSet(viewsets.ModelViewSet):
 
     
 
-from rest_framework.views import APIView
 
 class LatestInvoiceBillView(APIView):
     def get(self, request, *args, **kwargs):
@@ -368,3 +368,56 @@ class LatestInvoiceBillView(APIView):
                 'id': 0
             }
             return Response(data, status=status.HTTP_200_OK)
+
+
+
+
+
+class ImportProductViewSet(viewsets.ModelViewSet):
+    queryset = ImportProduct.objects.all().order_by("-id")
+    serializer_class = ImportProductSerializer
+    pagination_class = EightPagination
+    # permission_classes = [IsAuthenticated]
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     search_name = self.request.query_params.get('search_name', None)
+    #     category = self.request.query_params.get('category', None)
+
+    #     if search_name:
+    #         queryset = queryset.filter(Q(name__icontains=search_name))
+    #     if category:
+    #         queryset = queryset.filter(Q(category=category))
+            
+    #     return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+    def partial_update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
