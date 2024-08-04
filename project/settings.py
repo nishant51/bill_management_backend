@@ -110,6 +110,7 @@ CLOUDINARY_STORAGE = {
     'API_KEY': '795433663945294',
     'API_SECRET': 'pnwCFjCqLtepOkN7LMNem78eOLM',
 }
+
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -151,9 +152,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 
-
 MEDIA_URL = '/media/'
-# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -169,16 +169,6 @@ EMAIL_USE_SSL = config('EMAIL_USE_SSL', cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-# # CLOUDINARY_STORAGE = {
-# #     'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
-# #     'API_KEY': config('CLOUDINARY_API_KEY'),
-# #     'API_SECRET': config('CLOUDINARY_API_SECRET'),
-# # }
-# CLOUDINARY_STORAGE = {
-#     'CLOUD_NAME': 'di04sgifz',
-#     'API_SECRET': 'pnwCFjCqLtepOkN7LMNem78eOLM',
-#     'API_KEY': '795433663945294',
-# }
-# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
