@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from cloudinary.models import CloudinaryField
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -73,11 +74,11 @@ class InvoiceBill(models.Model):
     bill_for = models.CharField(max_length=500, blank=True, null=True)
     is_printed= models.BooleanField(default=False)
     remark = models.TextField(blank= True,  null= True)
-    pdf = models.FileField(upload_to='documents/', blank=True, null= True)
+    pdf = CloudinaryField(resource_type='raw', blank=True, null=True)
 
 
-    def __str__(self):
-        return f"invoice bill ID: {self.id}"
+    # def __str__(self):
+    #     return f"invoice bill ID: {self.id}" if self.id is not None else "ID not set"
 
 
 from django.db import models

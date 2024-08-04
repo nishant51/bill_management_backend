@@ -26,7 +26,7 @@ class ProductAdmin(admin.ModelAdmin):
     readonly_fields = ('added_date', 'updated_date')
     fieldsets = (
         (None, {
-            'fields': ('name', 'price', 'quantity', 'category', 'sub_category')
+            'fields': ('name', 'price', 'category', 'sub_category')
         }),
         ('Dates', {
             'fields': ('added_date', 'updated_date', 'empty_date')
@@ -38,14 +38,16 @@ class InvoiceItemAdmin(admin.ModelAdmin):
     list_display = ('id', 'product', 'quantity', 'total_price', 'created_at', 'discount', 'sold_out')
     search_fields = ('product__name',)
 
-@admin.register(InvoiceBill)
-class InvoiceBillAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'display_Invoice_Item', 'bill_for', 'is_printed')
-    search_fields = ('Invoice_Item__name',)
+# @admin.register(InvoiceBill)
+# class InvoiceBillAdmin(admin.ModelAdmin):
+#     list_display = ('id', 'name', 'display_Invoice_Item', 'bill_for', 'is_printed', 'pdf')
+#     search_fields = ('Invoice_Item__name',)
 
-    def display_Invoice_Item(self, obj):
-        return ", ".join([item.product.name for item in obj.Invoice_Item.all()])
-    display_Invoice_Item.short_description = 'Sold Products'
+#     def display_Invoice_Item(self, obj):
+#         items = [item.product.name for item in obj.Invoice_Item.all()]
+#         print(f"Items: {items}")
+#         return ", ".join(items) if items else "No Products"
+admin.site.register(InvoiceBill)
 
 
 

@@ -376,7 +376,7 @@ class LatestInvoiceBillView(APIView):
 class ImportProductViewSet(viewsets.ModelViewSet):
     queryset = ImportProduct.objects.all().order_by("-id")
     serializer_class = ImportProductSerializer
-    pagination_class = EightPagination
+    # pagination_class = EightPagination
     # permission_classes = [IsAuthenticated]
 
     # def get_queryset(self):
