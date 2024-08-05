@@ -74,7 +74,8 @@ class InvoiceBill(models.Model):
     bill_for = models.CharField(max_length=500, blank=True, null=True)
     is_printed= models.BooleanField(default=False)
     remark = models.TextField(blank= True,  null= True)
-    pdf = CloudinaryField(resource_type='raw', blank=True, null=True)
+    bill_pdf = models.FileField(upload_to='bill_pdf/', blank=True, null=True)
+
 
 
     # def __str__(self):
